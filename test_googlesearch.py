@@ -1,12 +1,16 @@
 from selene import browser, be, have
-from selenium import webdriver
+import pytest
 
 
-def open_page():
-    browser.open('https://www.google.com/')
-    browser.element('[name="q"]').should(be.blank).type('yashaka/selene').press_enter()
-    assert browser.element('[data-test-id="mainline"]') == 'Selene - User-oriented Web UI browser tests in Python'
-    #browser.element('[data-test-id="mainline"]').should(
-        #have.text('Selene - User-oriented Web UI browser tests in Python'))
+def test_search_res(browser_settings):
+    browser.element('[name="q"]').clear()
+    browser.element('[name="q"]').type('yashaka/selene').press_enter()
+    browser.element('#search').should(
+        have.text('Selene - User-oriented Web UI browser tests in Python'))
 
-    #assert ("123", 123)
+
+def test_search_no_res(browser_settings):
+    any_text = "gdsjfgjrwerwerewr"
+    browser.element('[name="q"]').clear()
+    browser.element('[name="q"]').type(any_text).press_enter()
+    browser.element('#result-stats').should(have.text('About 0 results'))
